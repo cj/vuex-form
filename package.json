@@ -1,0 +1,22 @@
+{
+  "name": "vuex-form",
+  "version": "0.0.1",
+  "description": "not yet released",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/cj/vuex-form"
+  },
+  "keywords": [
+    "vue",
+    "vuejs",
+    "vuex",
+    "form",
+    "validation"
+  ],
+  "author": "CJ Lazell",
+  "license": "MIT"
+}
