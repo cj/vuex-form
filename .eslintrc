@@ -1,0 +1,25 @@
+{
+  "root": true,
+  "extends": [ "standard" ],
+  "parser": "babel-eslint",
+  "env": {
+    "browser": true,
+    "es6": true,
+    "mocha": true,
+    "node": true
+  },
+  "globals": {
+    "expect": true
+  },
+  "rules": {
+    "no-multi-spaces": [
+      "error", {
+        "exceptions":
+        {
+          "VariableDeclarator": true,
+          "ImportDeclaration": true
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "presets": [
+    ["es2015", { "modules": false }],
+    "stage-0"
+  ],
+  "plugins": ["fast-async"],
+  "auxiliaryCommentBefore": "istanbul ignore next",
+  "env": {
+    "test": {
+      "plugins": [
+        ["istanbul", {"exclude": ["**/*.spec.(js|vue)"], "include": ["src/**/*.js"]}]
+      ]
+    }
+  }
+}

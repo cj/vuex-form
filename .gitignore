@@ -3,7 +3,6 @@ coverage/
 node_modules/
 tmp/
 
-
 # Extensions
 *.gz
 *.log
@@ -11,12 +10,11 @@ tmp/
 *.tar
 *.zip
 
-
 # IDE generated
 .idea/
 .project
 *.iml
-
+.tern-port
 
 # OS generated
 __MACOSX/

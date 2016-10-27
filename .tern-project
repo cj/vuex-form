@@ -1,0 +1,20 @@
+{
+  "libs": [
+    "ecma5",
+    "ecma6",
+    "chai",
+    "ecmascript",
+    "underscore"
+  ],
+  "plugins": {
+    "node": {},
+    "node-resolve": {},
+    "node-express": {
+      "dontLoad": [ "node_modules" ]
+    },
+    "complete_strings": {},
+    "doc_comment": {},
+    "requirejs": {},
+    "es_modules": {}
+  }
+}
