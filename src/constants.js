@@ -12,6 +12,6 @@ export const UPDATE_INPUT = namespace('UPDATE_INPUT')
 export const UPDATE_DATA  = namespace('UPDATE_DATA')
 
 // Getters
-export const FORM_VALUES = namespace('FORM_VALUES')
+export const FORM_DATA = namespace('FORM_DATA')
 
 export default namespace

@@ -4,10 +4,7 @@ import Vuex from 'vuex'
 import VuexForm, { constants } from '../index'
 import VuexFormTest from './index.spec.vue'
 
-const {
-  // Getters
-  FORM_VALUES
-} = constants
+const { FORM_DATA } = constants
 
 describe('VuexForm', () => {
   let vm
@@ -28,7 +25,7 @@ describe('VuexForm', () => {
       components: { VuexFormTest }
     }).$mount()
 
-    formStore = store.state['vuex-form']
+    formStore = store.state['vuex-form'].forms
   })
 
   it('state should contain vuex-form', () => {
@@ -41,7 +38,7 @@ describe('VuexForm', () => {
     })
 
     it('initial values should be null', () => {
-      expect(store.getters[FORM_VALUES]('signup')).to.deep.equal({
+      expect(store.getters[FORM_DATA]('signup')).to.deep.equal({
         user_id: null,
         user: {
           first_name: null,
@@ -50,7 +47,7 @@ describe('VuexForm', () => {
       })
     })
 
-    it('should update store on input value change', done => {
+    it('should update store on input value change', async () => {
       let firstNameInput = vm.$el.querySelector('[name="user[first_name]"]')
 
       let innerHTML = vm.$el.getElementsByClassName('first_name')[0].innerHTML
@@ -59,10 +56,9 @@ describe('VuexForm', () => {
       firstNameInput.value = 'Foo'
       firstNameInput.dispatchEvent(new Event('change'))
 
-      Vue.nextTick(() => {
+      await Vue.nextTick(() => {
         let innerHTML = vm.$el.getElementsByClassName('first_name')[0].innerHTML
         expect(innerHTML).to.equal('Foo')
-        done()
       })
     })
   })

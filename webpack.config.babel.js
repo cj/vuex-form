@@ -53,7 +53,11 @@ if (ENV_DEVELOPMENT || ENV_PRODUCTION) {
   config.output = {
     filename: '[name].js',
     path: path.resolve('./dist'),
-    publicPath: '/'
+    publicPath: '/',
+    // export itself to a global var
+    libraryTarget: 'var',
+    // name of the global var: "Foo"
+    library: 'VuexForm'
   }
 }
 
@@ -94,7 +98,7 @@ if (ENV_DEVELOPMENT) {
 if (ENV_PRODUCTION) {
   config.devtool = 'hidden-source-map'
 
-  config.output.filename = '[name].[chunkhash].js'
+  config.output.filename = '[name].min.js'
 
   config.module = {
     rules: [ rules.js, rules.vue ]

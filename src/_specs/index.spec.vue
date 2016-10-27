@@ -8,22 +8,16 @@
     <main>
       <div>
         <h1>User Firstname</h1>
-        <div class="first_name">{{ user && user.first_name }}</div>
+        <div class="first_name">{{ formData.length && formData.user.first_name }}</div>
       </div>
     </main>
   </div>
 </template>
 
 <script>
-  import * as constants from '../constants'
+  import { constants } from '../index'
 
-  const {
-    // Actions
-    NEW_FORM,
-
-    // Getters
-    FORM_VALUES
-  } = constants
+  const { FORM_DATA } = constants
 
   export default {
     methods: {
@@ -32,8 +26,8 @@
       }
     },
     computed: {
-      user() {
-        return this.$store.getters[FORM_VALUES]('signup').user
+      formData() {
+        return this.$store.getters[FORM_DATA]('signup')
       }
     }
   }

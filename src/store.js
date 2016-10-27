@@ -15,30 +15,19 @@ const {
   UPDATE_DATA,
 
   // Getters
-  FORM_VALUES
+  FORM_DATA
 } = constants
 
 export default {
   state: {
-    signup: {
-      data: []
-    }
+    forms: {}
   },
   getters: {
-    [FORM_VALUES]: state => formName => {
-      // return form.inputs.reduce((inputObj, input) => {
-      //   let keys = input.name.replace(']', '').split('[')
-      //   return lodashSet(inputObj, keys, input.value)
-      // }, {})
-      return state[formName].data
+    [FORM_DATA]: state => formName => {
+      let form = state.forms[formName]
+
+      return form ? form.data : {}
     }
-  //   errors: state => (formName, name) => {
-  //     const errors = state.errors[formName]
-  //
-  //     return (errors || []).filter(error => error.name === name).map(error => {
-  //       return error.errors[0]
-  //     })
-  //   }
   },
   actions: {
     [NEW_FORM] ({ commit }, name) {
@@ -55,21 +44,23 @@ export default {
   },
   mutations: {
     [CREATE_FORM] (state, name) {
-      state[name] = {
-        errors: [],
-        inputs: [],
-        data: {},
-        touched: false,
-        submitting: false,
-        awaitAsync: false,
-        valid: false
+      state.forms = { ...state.forms,
+        [name]: {
+          errors: [],
+          inputs: [],
+          data: {},
+          touched: false,
+          submitting: false,
+          awaitAsync: false,
+          valid: false
+        }
       }
     },
     [INSERT_INPUT] (state, { formName, input }) {
-      state[formName].inputs.push({ value: null, touched: false, ...input })
+      state.forms[formName].inputs.push({ value: null, touched: false, ...input })
     },
     [UPDATE_INPUT] (state, { id, formName, value }) {
-      let form       = state[formName]
+      let form       = state.forms[formName]
       let inputs     = form.inputs
       let foundIndex = inputs.findIndex(input => input.id === id)
 
@@ -79,7 +70,7 @@ export default {
       })
     },
     [UPDATE_DATA] (state, { formName }) {
-      let form = state[formName]
+      let form = state.forms[formName]
       let newData = {}
 
       form.inputs.forEach(input => {
