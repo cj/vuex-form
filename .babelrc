@@ -1,9 +1,11 @@
 {
   "presets": [
-    ["es2015", { "modules": false }],
-    "stage-0"
+    ["es2015", { "modules": false }]
   ],
-  "plugins": ["fast-async"],
+  "plugins": [
+    "fast-async",
+    "transform-object-rest-spread"
+  ],
   "auxiliaryCommentBefore": "istanbul ignore next",
   "env": {
     "test": {

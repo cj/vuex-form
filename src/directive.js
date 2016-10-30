@@ -1,8 +1,10 @@
 import uniqueId from 'lodash/uniqueid'
-// import debounce from 'lodash/debounce'
+import debounce from 'lodash/debounce'
 
 import * as constant from './constants'
 import forEach       from 'lodash/foreach'
+
+export const getValue = el => { return (el.files || el.value) || null }
 
 export const bindForm = ({el, value, store}) => {
   let formName = el.name
@@ -13,48 +15,47 @@ export const bindForm = ({el, value, store}) => {
   store.dispatch(constant.NEW_FORM, formName)
 
   forEach(inputs, input => {
-    input.dataset.vuexForm = formName
+    input.dataset.formName = formName
     input.dispatchEvent(new Event('vuexFormInit'))
   })
 }
 
-export const bindInput = ({el, value, store}) => {
-  let id = uniqueId()
+export const bindInput = ({el, bindingValue, store}) => {
+  let eventTypes = ['keyup', 'keydown', 'change']
+
+  let id         = uniqueId()
+  let validation = bindingValue
+  let name       = el.name
+  let type       = el.type
+  // value is not a variable as `el.value` could/will be updated.
 
   el.addEventListener('vuexFormInit', () => {
     store.dispatch(constant.ADD_INPUT, {
-      formName: el.dataset.vuexForm,
-      input: {
-        id: id,
-        name: el.name,
-        type: el.type,
-        validation: value
-      }
+      formName: el.dataset.formName,
+      input: { id, name, type, validation, value: getValue(el) }
     })
   })
 
-  // TODO: use debounce here
-  el.addEventListener('change', () => {
-    let value = el.value
-
-    store.dispatch(constant.CHANGE_INPUT, {
-      id,
-      formName: el.dataset.vuexForm,
-      value: el.files || value
-    })
+  eventTypes.forEach(eventType => {
+    el.addEventListener(eventType, debounce(async () => {
+      await store.dispatch(constant.CHANGE_INPUT, {
+        id, name, type, validation, formName: el.dataset.formName, value: getValue(el)
+      })
+      el.dispatchEvent(new Event('vuexFormUpdate'))
+    }, 250))
   })
 }
 
 export default ({ store }) => ({
   bind (el, binding, { tag }) {
-    let value = binding.value
+    let bindingValue = binding.value
 
     switch (tag) {
       case 'form':
-        bindForm({el, value, store})
+        bindForm({el, bindingValue, store})
         break
       case 'input':
-        bindInput({el, value, store})
+        bindInput({el, bindingValue, store})
         break
     }
   }

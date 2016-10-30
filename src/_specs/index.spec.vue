@@ -8,7 +8,7 @@
     <main>
       <div>
         <h1>User Firstname</h1>
-        <div class="first_name">{{ formData.length && formData.user.first_name }}</div>
+        <div class="first_name">{{ formData.user && formData.user.first_name }}</div>
       </div>
     </main>
   </div>

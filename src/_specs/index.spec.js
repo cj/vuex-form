@@ -23,7 +23,9 @@ describe('VuexForm', () => {
       plugins: [VuexForm(Vue, {store})],
       template: '<div><VuexFormTest /></div>',
       components: { VuexFormTest }
-    }).$mount()
+    })
+
+    vm.$mount()
 
     formStore = store.state['vuex-form'].forms
   })
@@ -47,19 +49,37 @@ describe('VuexForm', () => {
       })
     })
 
-    it('should update store on input value change', async () => {
+    it('should validate input on change', done => {
+      let firstNameInput = vm.$el.querySelector('[name="user[first_name]"]')
+
+      firstNameInput.addEventListener('vuexFormUpdate', () => {
+        Vue.nextTick(() => {
+          let input = formStore.signup.inputs.filter(input => { return input.name === 'user[first_name]' })[0]
+          expect(input.valid).to.be.false
+          done()
+        })
+      })
+
+      firstNameInput.dispatchEvent(new Event('change'))
+    })
+
+    it('should update store on input value change', done => {
       let firstNameInput = vm.$el.querySelector('[name="user[first_name]"]')
 
       let innerHTML = vm.$el.getElementsByClassName('first_name')[0].innerHTML
       expect(innerHTML).to.equal('')
 
       firstNameInput.value = 'Foo'
-      firstNameInput.dispatchEvent(new Event('change'))
 
-      await Vue.nextTick(() => {
-        let innerHTML = vm.$el.getElementsByClassName('first_name')[0].innerHTML
-        expect(innerHTML).to.equal('Foo')
+      firstNameInput.addEventListener('vuexFormUpdate', () => {
+        vm.$nextTick(() => {
+          let innerHTML = vm.$el.getElementsByClassName('first_name')[0].innerHTML
+          expect(innerHTML).to.equal('Foo')
+          done()
+        })
       })
+
+      firstNameInput.dispatchEvent(new Event('change'))
     })
   })
 })

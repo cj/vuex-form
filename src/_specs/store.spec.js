@@ -1,6 +1,6 @@
 import uniqueId from 'lodash/uniqueid'
 
-import store from '../store'
+import { mutations, actions } from '../store'
 import {
   // Mutations
   CREATE_FORM,
@@ -12,11 +12,6 @@ import {
   ADD_INPUT,
   CHANGE_INPUT
 } from '../constants'
-
-const {
-  mutations,
-  actions
-} = store
 
 const testAction = (action, payload, state, expectedMutations, done) => {
   let count = 0
@@ -116,6 +111,7 @@ describe('store', () => {
 
       testAction(actions[CHANGE_INPUT], payload, {}, [
         { type: UPDATE_INPUT, payload: payload }
+        // TODO: add mutation UPDATE_DATA
       ], done)
     })
   })
