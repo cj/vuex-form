@@ -6,6 +6,7 @@ import lodashMerge    from 'lodash/merge'
 import lodashForEach  from 'lodash/foreach'
 
 import * as constants from './constants'
+import VuexFormObject from './object'
 
 const {
   // Actions
@@ -51,12 +52,12 @@ const store = ({ validation }) => {
       [FORM_DATA]: state => formName => {
         let form = state.forms[formName]
 
-        return form ? form.data : {}
+        return new VuexFormObject(form ? form.data : {})
       },
       [FORM_ERRORS]: state => formName => {
         let form = state.forms[formName]
 
-        return form ? form.errors : {}
+        return new VuexFormObject(form ? form.errors : {})
       }
     },
     actions: {

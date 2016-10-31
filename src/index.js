@@ -1,3 +1,5 @@
+import 'babel-polyfill'
+
 import namespace, * as constants from './constants'
 import store                     from './store'
 import directive                 from './directive'

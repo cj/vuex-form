@@ -4,7 +4,8 @@
   ],
   "plugins": [
     "fast-async",
-    "transform-object-rest-spread"
+    "transform-object-rest-spread",
+    "transform-es2015-parameters"
   ],
   "auxiliaryCommentBefore": "istanbul ignore next",
   "env": {
