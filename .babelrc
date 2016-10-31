@@ -10,7 +10,7 @@
   "env": {
     "test": {
       "plugins": [
-        ["istanbul", {"exclude": ["**/*.spec.(js|vue)"], "include": ["src/**/*.js"]}]
+        ["istanbul", {"exclude": ["**/*.spec.(js|vue)", "**/_specs"], "include": ["src/**/*.js"]}]
       ]
     }
   }

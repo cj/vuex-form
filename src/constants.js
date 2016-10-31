@@ -6,12 +6,14 @@ export const ADD_INPUT    = namespace('ADD_INPUT')
 export const CHANGE_INPUT = namespace('CHANGE_INPUT')
 
 // Mutations
-export const CREATE_FORM  = namespace('CREATE_FORM')
-export const INSERT_INPUT = namespace('INSERT_INPUT')
-export const UPDATE_INPUT = namespace('UPDATE_INPUT')
-export const UPDATE_DATA  = namespace('UPDATE_DATA')
+export const CREATE_FORM   = namespace('CREATE_FORM')
+export const INSERT_INPUT  = namespace('INSERT_INPUT')
+export const UPDATE_INPUT  = namespace('UPDATE_INPUT')
+export const UPDATE_DATA   = namespace('UPDATE_DATA')
+export const UPDATE_ERRORS = namespace('UPDATE_ERRORS')
 
 // Getters
-export const FORM_DATA = namespace('FORM_DATA')
+export const FORM_DATA   = namespace('FORM_DATA')
+export const FORM_ERRORS = namespace('FORM_ERRORS')
 
 export default namespace

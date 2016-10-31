@@ -1,4 +1,6 @@
-import uniqueId from 'lodash/uniqueid'
+import lodashUniqueId from 'lodash/uniqueid'
+
+import { testAction } from './helpers'
 
 import { mutations, actions } from '../store'
 import {
@@ -6,41 +8,14 @@ import {
   CREATE_FORM,
   INSERT_INPUT,
   UPDATE_INPUT,
+  UPDATE_DATA,
+  REMOVE_ERROR,
 
   // Actions
   NEW_FORM,
   ADD_INPUT,
   CHANGE_INPUT
 } from '../constants'
-
-const testAction = (action, payload, state, expectedMutations, done) => {
-  let count = 0
-
-  // mock commit
-  const commit = (type, payload) => {
-    const mutation = expectedMutations[count]
-    expect(mutation.type).to.equal(type)
-
-    if (payload) {
-      expect(mutation.payload).to.deep.equal(payload)
-    }
-
-    count++
-
-    if (count >= expectedMutations.length) {
-      done()
-    }
-  }
-
-  // call the action with mocked store and arguments
-  action({ commit, state }, payload)
-
-  // check if no mutations should have been dispatched
-  if (expectedMutations.length === 0) {
-    expect(count).to.equal(0)
-    done()
-  }
-}
 
 describe('store', () => {
   context('mutations', () => {
@@ -52,7 +27,7 @@ describe('store', () => {
       expect(state).to.include.keys('forms')
       expect(state.forms).to.include.keys('test')
       expect(state.forms.test).to.deep.equal({
-        errors: [],
+        errors: {},
         inputs: [],
         data: {},
         touched: false,
@@ -75,7 +50,7 @@ describe('store', () => {
     })
 
     it('UPDATE_INPUT', () => {
-      const inputId = uniqueId('input_')
+      const inputId = lodashUniqueId('input_')
       const state = { forms: {
         test: { inputs: [{ id: inputId, value: null, touched: false }] }
       }}
@@ -100,18 +75,20 @@ describe('store', () => {
 
     it('ADD_INPUT', done => {
       let payload = { formName: 'test', input: {} }
+      let state   = {}
 
-      testAction(actions[ADD_INPUT], payload, {}, [
+      testAction(actions[ADD_INPUT], payload, state, [
         { type: INSERT_INPUT, payload: payload }
       ], done)
     })
 
     it('CHANGE_INPUT', done => {
-      let payload = { id: 1, formName: 'test', value: 'foo' }
+      let payload = { id: 1, formName: 'test', value: 'foo', valid: true }
+      let state   = {}
 
-      testAction(actions[CHANGE_INPUT], payload, {}, [
+      testAction(actions[CHANGE_INPUT], payload, state, [
+        { type: REMOVE_ERROR, payload: payload },
         { type: UPDATE_INPUT, payload: payload }
-        // TODO: add mutation UPDATE_DATA
       ], done)
     })
   })

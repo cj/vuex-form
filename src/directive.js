@@ -1,8 +1,8 @@
-import uniqueId from 'lodash/uniqueid'
-import debounce from 'lodash/debounce'
+import lodashUniqueId from 'lodash/uniqueid'
+import lodashDebounce from 'lodash/debounce'
 
 import * as constant from './constants'
-import forEach       from 'lodash/foreach'
+import lodashForEach       from 'lodash/foreach'
 
 export const getValue = el => { return (el.files || el.value) || null }
 
@@ -14,7 +14,7 @@ export const bindForm = ({el, value, store}) => {
 
   store.dispatch(constant.NEW_FORM, formName)
 
-  forEach(inputs, input => {
+  lodashForEach(inputs, input => {
     input.dataset.formName = formName
     input.dispatchEvent(new Event('vuexFormInit'))
   })
@@ -23,7 +23,7 @@ export const bindForm = ({el, value, store}) => {
 export const bindInput = ({el, bindingValue, store}) => {
   let eventTypes = ['keyup', 'keydown', 'change']
 
-  let id         = uniqueId()
+  let id         = lodashUniqueId()
   let validation = bindingValue
   let name       = el.name
   let type       = el.type
@@ -37,11 +37,10 @@ export const bindInput = ({el, bindingValue, store}) => {
   })
 
   eventTypes.forEach(eventType => {
-    el.addEventListener(eventType, debounce(async () => {
-      await store.dispatch(constant.CHANGE_INPUT, {
+    el.addEventListener(eventType, lodashDebounce(() => {
+      store.dispatch(constant.CHANGE_INPUT, {
         id, name, type, validation, formName: el.dataset.formName, value: getValue(el)
       })
-      el.dispatchEvent(new Event('vuexFormUpdate'))
     }, 250))
   })
 }

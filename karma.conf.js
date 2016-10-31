@@ -1,6 +1,6 @@
 module.exports = config => {
   config.set({
-    frameworks: ['mocha', 'chai'],
+    frameworks: ['mocha', 'chai', 'sinon'],
 
     files: [
       'karma.entry.js'
