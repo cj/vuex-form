@@ -8,13 +8,10 @@
   ],
   "plugins": {
     "node": {},
-    "node-resolve": {},
-    "node-express": {
-      "dontLoad": [ "node_modules" ]
-    },
     "complete_strings": {},
     "doc_comment": {},
     "requirejs": {},
-    "es_modules": {}
+    "es_modules": {},
+    "webpack": {}
   }
 }
