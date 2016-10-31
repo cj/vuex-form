@@ -24,7 +24,7 @@ export const bindInput = ({el, bindingValue, store}) => {
   let eventTypes = ['keyup', 'keydown', 'change']
 
   let id         = lodashUniqueId()
-  let validation = bindingValue
+  let validation = bindingValue || {}
   let name       = el.name
   let type       = el.type
   // value is not a variable as `el.value` could/will be updated.
@@ -39,7 +39,8 @@ export const bindInput = ({el, bindingValue, store}) => {
   eventTypes.forEach(eventType => {
     el.addEventListener(eventType, lodashDebounce(() => {
       store.dispatch(constant.CHANGE_INPUT, {
-        id, name, type, validation, formName: el.dataset.formName, value: getValue(el)
+        formName: el.dataset.formName,
+        input: { id, name, type, validation, value: getValue(el) }
       })
     }, 250))
   })

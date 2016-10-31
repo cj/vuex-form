@@ -9,7 +9,7 @@ import {
   INSERT_INPUT,
   UPDATE_INPUT,
   UPDATE_DATA,
-  REMOVE_ERROR,
+  UPDATE_ERRORS,
 
   // Actions
   NEW_FORM,
@@ -56,7 +56,8 @@ describe('store', () => {
       }}
 
       mutations[UPDATE_INPUT](state, {
-        formName: 'test', id: inputId, value: 'foo'
+        formName: 'test',
+        input: { id: inputId, value: 'foo' }
       })
 
       const input = state.forms.test.inputs[0]
@@ -67,6 +68,20 @@ describe('store', () => {
   })
 
   context('actions', () => {
+    let formName
+    let errors
+    let input
+    let state
+    let payload
+
+    beforeEach(() => {
+      formName = 'test'
+      errors = []
+      input = { id: 1, value: 'foo', valid: true, errors }
+      state = {}
+      payload = { formName, input }
+    })
+
     it('NEW_FORM', done => {
       testAction(actions[NEW_FORM], 'test', {}, [
         { type: CREATE_FORM, payload: 'test' }
@@ -74,21 +89,18 @@ describe('store', () => {
     })
 
     it('ADD_INPUT', done => {
-      let payload = { formName: 'test', input: {} }
-      let state   = {}
-
       testAction(actions[ADD_INPUT], payload, state, [
-        { type: INSERT_INPUT, payload: payload }
+        { type: INSERT_INPUT, payload: payload },
+        { type: UPDATE_DATA, payload: payload },
+        { type: UPDATE_ERRORS, payload: { ...payload, errors } }
       ], done)
     })
 
     it('CHANGE_INPUT', done => {
-      let payload = { id: 1, formName: 'test', value: 'foo', valid: true }
-      let state   = {}
-
       testAction(actions[CHANGE_INPUT], payload, state, [
-        { type: REMOVE_ERROR, payload: payload },
-        { type: UPDATE_INPUT, payload: payload }
+        { type: UPDATE_INPUT, payload: payload },
+        { type: UPDATE_DATA, payload: payload },
+        { type: UPDATE_ERRORS, payload: { ...payload, errors } }
       ], done)
     })
   })

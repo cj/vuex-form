@@ -65,6 +65,7 @@ const store = ({ validation }) => {
       },
       [ADD_INPUT] ({ commit }, { formName, input }) {
         const { validation: inputValidation } = input
+
         let [valid, errors] = runValidation(input.value, inputValidation)
 
         input = { ...input, valid, errors }
@@ -73,14 +74,14 @@ const store = ({ validation }) => {
         commit(UPDATE_DATA, { formName, input })
         commit(UPDATE_ERRORS, { formName, input, errors })
       },
-      [CHANGE_INPUT] ({ commit, state }, input) {
-        const { formName, validation: inputValidation } = input
+      [CHANGE_INPUT] ({ commit, state }, { formName, input }) {
+        const { validation: inputValidation } = input
 
         let [valid, errors] = runValidation(input.value, inputValidation)
 
         input = { ...input, valid, errors }
 
-        commit(UPDATE_INPUT, input)
+        commit(UPDATE_INPUT, { formName, input })
         commit(UPDATE_DATA, { formName, input })
         commit(UPDATE_ERRORS, { formName, input, errors })
       }
@@ -104,7 +105,8 @@ const store = ({ validation }) => {
           value: null, touched: false, valid: true, errors: [], ...input
         })
       },
-      [UPDATE_INPUT] (state, { id, formName, valid, value }) {
+      [UPDATE_INPUT] (state, { formName, input }) {
+        let { id, valid, value } = input
         let form       = state.forms[formName]
         let inputs     = form.inputs
         let foundIndex = inputs.findIndex(input => input.id === id)

@@ -56,7 +56,7 @@ describe('VuexForm', () => {
       expect(formStore.signup.inputs.length).to.equal(3)
     })
 
-    it.only('initial values should be null', () => {
+    it('initial values should be null', () => {
       expect(store.getters[FORM_DATA]('signup')).to.deep.equal({
         user_id: null,
         user: {
