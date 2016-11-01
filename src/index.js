@@ -3,11 +3,11 @@ import 'babel-polyfill'
 import namespace, * as constants from './constants'
 import store                     from './store'
 import directive                 from './directive'
-import validation                from './validation'
+import Validation                from './validation'
 
 const install = (Vue, options) => {
   options.store.registerModule('vuex-form', store({
-    validation: validation(options)
+    validation: new Validation(options)
   }))
 
   Vue.directive('vuex-form', directive(options))
