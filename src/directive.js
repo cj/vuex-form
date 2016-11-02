@@ -18,6 +18,10 @@ export const bindForm = ({el, value, store}) => {
     input.dataset.formName = formName
     input.dispatchEvent(new Event('vuexFormInit'))
   })
+
+  el.addEventListener('submit', (event) => {
+    el.dispatchEvent(new Event('vuexFormSubmit'))
+  })
 }
 
 export const bindInput = ({el, bindingValue, store}) => {

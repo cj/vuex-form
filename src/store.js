@@ -4,6 +4,7 @@ import lodashLast     from 'lodash/last'
 import lodashUnSet    from 'lodash/unset'
 import lodashMerge    from 'lodash/merge'
 import lodashForEach  from 'lodash/foreach'
+import lodashIsEqual  from 'lodash/isequal'
 
 import * as constants from './constants'
 import VuexFormObject from './object'
@@ -134,7 +135,7 @@ const store = ({ validation }) => {
           lodashUnSet(newErrors, keys)
           keys.pop()
 
-          let lastKey = lodashLast(keys)
+          let lastKey   = lodashLast(keys)
           let lastError = newErrors[lastKey]
 
           if (lodashIsEmpty(lastError)) {
@@ -142,7 +143,11 @@ const store = ({ validation }) => {
           }
         }
 
-        form.errors = newErrors
+        // This is to prevent unnecessary vue rendering when the errors object
+        // is the same.
+        if (!lodashIsEqual(form.errors, newErrors)) {
+          form.errors = newErrors
+        }
       }
     }
   }
