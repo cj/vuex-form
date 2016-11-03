@@ -68,13 +68,14 @@ describe('VuexForm', () => {
 
     it('should validate input on change', done => {
       let firstNameInput = vm.$el.querySelector('[name="user[first_name]"]')
-      firstNameInput.dispatchEvent(new Event('change'))
 
       store.testAction[CHANGE_INPUT] = (action, payload) => {
-        let input = formStore.signup.inputs.filter(input => { return input.name === 'user[first_name]' })[0]
+        let input = formStore.signup.inputs.find(input => { return input.name === 'user[first_name]' })
         expect(input.valid).to.be.false
         done()
       }
+
+      firstNameInput.dispatchEvent(new Event('change'))
     })
 
     it('should update store and ui on input value change', done => {
@@ -84,13 +85,14 @@ describe('VuexForm', () => {
       expect(innerHTML).to.equal('')
 
       firstNameInput.value = 'Foo'
-      firstNameInput.dispatchEvent(new Event('change'))
 
       store.testAction[CHANGE_INPUT] = (action, payload) => {
         innerHTML = vm.$el.getElementsByClassName('first_name')[0].innerHTML
         expect(innerHTML).to.equal('Foo')
         done()
       }
+
+      firstNameInput.dispatchEvent(new Event('change'))
     })
   })
 })

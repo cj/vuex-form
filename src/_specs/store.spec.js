@@ -2,7 +2,8 @@ import lodashUniqueId from 'lodash/uniqueid'
 
 import { testAction } from './helpers'
 
-import { mutations, actions } from '../store'
+import Store from '../store'
+
 import {
   // Mutations
   CREATE_FORM,
@@ -14,11 +15,20 @@ import {
   // Actions
   NEW_FORM,
   ADD_INPUT,
-  CHANGE_INPUT
+  CHANGE_INPUT,
+
+  // Getters
+  INPUT_DATA
 } from '../constants'
 
 describe('store', () => {
+  let mutations, actions
+
   context('mutations', () => {
+    beforeEach(() => {
+      mutations = new Store({}).mutations
+    })
+
     it('NEW_FORM', () => {
       const state = {}
 
@@ -68,17 +78,15 @@ describe('store', () => {
   })
 
   context('actions', () => {
-    let formName
-    let errors
-    let input
-    let state
-    let payload
+    let formName, errors, input, state, payload, id
 
     beforeEach(() => {
+      actions = new Store({}).actions
+      id = 1
       formName = 'test'
       errors = []
-      input = { id: 1, value: 'foo', valid: true, errors }
-      state = {}
+      input = { value: 'foo', valid: true, errors, id }
+      state = { forms: { test: { errors } } }
       payload = { formName, input }
     })
 
@@ -97,10 +105,21 @@ describe('store', () => {
     })
 
     it('CHANGE_INPUT', done => {
-      testAction(actions[CHANGE_INPUT], payload, state, [
+      // Stub the store
+      actions = new Store({
+        store: {
+          getters: {
+            [INPUT_DATA]: (formName, id) => {
+              return input
+            }
+          }
+        }
+      }).actions
+
+      testAction(actions[CHANGE_INPUT], { formName, id, value: 'foo' }, state, [
+        { type: UPDATE_ERRORS, payload: { ...payload, errors } },
         { type: UPDATE_INPUT, payload: payload },
-        { type: UPDATE_DATA, payload: payload },
-        { type: UPDATE_ERRORS, payload: { ...payload, errors } }
+        { type: UPDATE_DATA, payload: payload }
       ], done)
     })
   })

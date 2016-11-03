@@ -6,14 +6,16 @@ import lodashMerge    from 'lodash/merge'
 import lodashForEach  from 'lodash/foreach'
 import lodashIsEqual  from 'lodash/isequal'
 
-import * as constants from './constants'
-import VuexFormObject from './object'
+import * as constants      from './constants'
+import VuexFormObject      from './object'
+import VuexFormErrorObject from './error_object'
 
 const {
   // Actions
   NEW_FORM,
   ADD_INPUT,
   CHANGE_INPUT,
+  SUBMIT_FORM,
 
   // Mutations
   CREATE_FORM,
@@ -21,13 +23,18 @@ const {
   UPDATE_INPUT,
   UPDATE_DATA,
   UPDATE_ERRORS,
+  UPDATE_FORM_VALID,
+  UPDATE_FORM_SUBMITTING,
 
   // Getters
   FORM_DATA,
-  FORM_ERRORS
+  FORM_ERRORS,
+  INPUT_DATA,
+  FORM_VALID,
+  FORM_CAN_SUBMIT
 } = constants
 
-const store = ({ validation }) => {
+const Store = ({ validation, store }) => {
   const runValidation = (value, inputValidation = {}) => {
     let validations = []
     let errors      = []
@@ -38,6 +45,7 @@ const store = ({ validation }) => {
       let [ valid, error ] = currentValidation(value, args)
 
       validations.push(valid)
+
       if (!valid) errors.push(error)
     })
 
@@ -58,7 +66,34 @@ const store = ({ validation }) => {
       [FORM_ERRORS]: state => formName => {
         let form = state.forms[formName]
 
-        return new VuexFormObject(form ? form.errors : {})
+        return new VuexFormErrorObject(form ? form.errors : {})
+      },
+      [INPUT_DATA]: state => (formName, id) => {
+        let form = state.forms[formName]
+
+        return form.inputs.find(input => input.id === id)
+      },
+      [FORM_VALID]: state => formName => {
+        let form = state.forms[formName]
+
+        if (form) {
+          if (form.touched) {
+            return form.valid
+          } else {
+            return true
+          }
+        } else {
+          return false
+        }
+      },
+      [FORM_CAN_SUBMIT]: state => formName => {
+        let form = state.forms[formName]
+
+        if (form && (!form.touched || (form.valid && !form.submitting && !form.awaitAsync))) {
+          return true
+        } else {
+          return false
+        }
       }
     },
     actions: {
@@ -76,16 +111,38 @@ const store = ({ validation }) => {
         commit(UPDATE_DATA, { formName, input })
         commit(UPDATE_ERRORS, { formName, input, errors })
       },
-      [CHANGE_INPUT] ({ commit, state }, { formName, input }) {
+      [CHANGE_INPUT] ({ commit, state }, { formName, id, value }) {
+        let form    = state.forms[formName]
+        let input   = store.getters[INPUT_DATA](formName, id)
+        input.value = value
+
         const { validation: inputValidation } = input
 
         let [valid, errors] = runValidation(input.value, inputValidation)
 
         input = { ...input, valid, errors }
 
+        commit(UPDATE_ERRORS, { formName, input, errors })
         commit(UPDATE_INPUT, { formName, input })
         commit(UPDATE_DATA, { formName, input })
-        commit(UPDATE_ERRORS, { formName, input, errors })
+
+        if (!lodashIsEmpty(form.errors) && form.valid) {
+          commit(UPDATE_FORM_VALID, { formName, valid: false })
+        } else if (lodashIsEmpty(form.errors) && !form.valid) {
+          commit(UPDATE_FORM_VALID, { formName, valid: true })
+        }
+      },
+      [SUBMIT_FORM] ({ commit, state }, formName) {
+        let form     = state.forms[formName]
+        const inputs = form.inputs
+
+        if (!form.touched) form.touched = true
+
+        form.submitting = true
+
+        inputs.forEach(input => {
+          commit(UPDATE_ERRORS, { formName, input, errors: false })
+        })
       }
     },
     mutations: {
@@ -108,12 +165,17 @@ const store = ({ validation }) => {
         })
       },
       [UPDATE_INPUT] (state, { formName, input }) {
-        let { id, valid, value } = input
+        let { id, valid, value, errors } = input
+
         let form       = state.forms[formName]
         let inputs     = form.inputs
         let foundIndex = inputs.findIndex(input => input.id === id)
 
-        inputs[foundIndex] = { ...inputs[foundIndex], value, valid, touched: true }
+        inputs[foundIndex] = {
+          ...inputs[foundIndex], value, valid, errors, touched: true
+        }
+
+        if (!form.touched) form.touched = true
       },
       [UPDATE_DATA] (state, { formName, input }) {
         let form = state.forms[formName]
@@ -128,9 +190,12 @@ const store = ({ validation }) => {
         let form      = state.forms[formName]
         let keys      = input.name.replace(']', '').split('[')
         let newErrors = { ...form.errors }
+        let touched = form.touched || input.touched
 
         if (errors.length) {
-          lodashSet(newErrors, keys, errors)
+          lodashSet(newErrors, keys, { errors, touched })
+        } else if (!errors && input.errors && input.errors.length) {
+          lodashSet(newErrors, keys, { errors: input.errors, touched })
         } else {
           lodashUnSet(newErrors, keys)
           keys.pop()
@@ -148,14 +213,20 @@ const store = ({ validation }) => {
         if (!lodashIsEqual(form.errors, newErrors)) {
           form.errors = newErrors
         }
+      },
+      [UPDATE_FORM_VALID] (state, { formName, valid }) {
+        state.forms[formName].valid = valid
+      },
+      [UPDATE_FORM_SUBMITTING] (state, { formName, value }) {
+        state.forms[formName].submitting = value
       }
     }
   }
 }
 
-let storeInstance = store({})
+let storeInstance = new Store({})
 
 export const mutations = storeInstance.mutations
 export const actions   = storeInstance.actions
 
-export default store
+export default Store
