@@ -9,14 +9,10 @@ export const Validation = ({ validation: customValidation = {}, validationMessag
   }
 
   return {
-    required (value, args = {}) {
-      let msg = getMsg('Required', args)
+    alphabetic (value, args = {}) {
+      let msg = getMsg('Must be a alphabetic value')
 
-      if (lodashIsString(value)) {
-        value = value.trim()
-      }
-
-      return [!lodashIsEmpty(value), msg]
+      return [!Array.isArray(value) && /^[a-zA-Z]*$/.test(value), msg]
     },
 
     alpha (value, args = {}) {
@@ -90,10 +86,14 @@ export const Validation = ({ validation: customValidation = {}, validationMessag
       return [!Array.isArray(value) && /^[0-9]*$/.test(value), msg]
     },
 
-    alphabetic (value, args = {}) {
-      let msg = getMsg('Must be a alphabetic value')
+    required (value, args = {}) {
+      let msg = getMsg('Required', args)
 
-      return [!Array.isArray(value) && /^[a-zA-Z]*$/.test(value), msg]
+      if (lodashIsString(value)) {
+        value = value.trim()
+      }
+
+      return [!lodashIsEmpty(value), msg]
     },
 
     ...customValidation
