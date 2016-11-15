@@ -37,7 +37,7 @@ describe('VuexForm', () => {
 
     vm = new Vue({
       store,
-      plugins: [VuexForm(Vue, {store})],
+      plugins: [VuexForm.install(Vue, {store})],
       template: '<div><VuexFormTest /></div>',
       components: { VuexFormTest }
     })
