@@ -1,10 +1,10 @@
 import lodashSet      from 'lodash/set'
-import lodashIsEmpty  from 'lodash/isempty'
+import lodashIsEmpty  from 'lodash/isEmpty'
 import lodashLast     from 'lodash/last'
 import lodashUnSet    from 'lodash/unset'
 import lodashMerge    from 'lodash/merge'
-import lodashForEach  from 'lodash/foreach'
-import lodashIsEqual  from 'lodash/isequal'
+import lodashForEach  from 'lodash/forEach'
+import lodashIsEqual  from 'lodash/isEqual'
 
 import * as constants      from './constants'
 import VuexFormObject      from './object'
@@ -25,6 +25,7 @@ const {
   UPDATE_ERRORS,
   UPDATE_FORM_VALID,
   UPDATE_FORM_SUBMITTING,
+  UPDATE_FORM_TOUCHED,
 
   // Getters
   FORM_DATA,
@@ -114,13 +115,12 @@ const Store = ({ validation, store }) => {
       [CHANGE_INPUT] ({ commit, state }, { formName, id, value }) {
         let form    = state.forms[formName]
         let input   = store.getters[INPUT_DATA](formName, id)
-        input.value = value
 
         const { validation: inputValidation } = input
 
-        let [valid, errors] = runValidation(input.value, inputValidation)
+        let [valid, errors] = runValidation(value, inputValidation)
 
-        input = { ...input, valid, errors }
+        input = { ...input, value, valid, errors, touched: true }
 
         commit(UPDATE_ERRORS, { formName, input, errors })
         commit(UPDATE_INPUT, { formName, input })
@@ -136,9 +136,9 @@ const Store = ({ validation, store }) => {
         let form     = state.forms[formName]
         const inputs = form.inputs
 
-        if (!form.touched) form.touched = true
+        if (!form.touched) commit(UPDATE_FORM_TOUCHED, { formName, value: true })
 
-        form.submitting = true
+        commit(UPDATE_FORM_SUBMITTING, { formName, value: true })
 
         inputs.forEach(input => {
           commit(UPDATE_ERRORS, { formName, input, errors: false })
@@ -219,6 +219,9 @@ const Store = ({ validation, store }) => {
       },
       [UPDATE_FORM_SUBMITTING] (state, { formName, value }) {
         state.forms[formName].submitting = value
+      },
+      [UPDATE_FORM_TOUCHED] (state, { formName, value }) {
+        state.forms[formName].touched = value
       }
     }
   }

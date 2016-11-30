@@ -1,8 +1,8 @@
-import lodashUniqueId from 'lodash/uniqueid'
-// import lodashDebounce from 'lodash/debounce'
+import lodashUniqueId from 'lodash/uniqueId'
+import lodashDebounce from 'lodash/debounce'
 
 import * as constant from './constants'
-import lodashForEach       from 'lodash/foreach'
+import lodashForEach       from 'lodash/forEach'
 
 export const getValue = el => { return (el.files || el.value) || null }
 
@@ -37,7 +37,7 @@ export const bindForm = (el, callback, store) => {
 }
 
 export const bindInput = (el, value, store) => {
-  let eventTypes = ['keyup', 'keydown', 'change']
+  let eventTypes = ['keyup', 'keydown', 'change', 'focusout']
 
   let id         = lodashUniqueId()
   let validation = value || {}
@@ -53,13 +53,13 @@ export const bindInput = (el, value, store) => {
   })
 
   eventTypes.forEach(eventType => {
-    el.addEventListener(eventType, () => {
+    el.addEventListener(eventType, lodashDebounce(() => {
       store.dispatch(constant.CHANGE_INPUT, {
         formName: el.dataset.formName,
         value: getValue(el),
         id
       })
-    })
+    }, 250))
   })
 }
 

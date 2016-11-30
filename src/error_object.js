@@ -1,4 +1,4 @@
-import lodashIsEmpty from 'lodash/isempty'
+import lodashIsEmpty from 'lodash/isEmpty'
 import lodashFirst   from 'lodash/first'
 import lodashLast    from 'lodash/last'
 

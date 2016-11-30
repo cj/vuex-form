@@ -1,6 +1,6 @@
-import lodashIsEmpty  from 'lodash/isempty'
-import lodashIsString from 'lodash/isstring'
-import lodashTemplate from 'lodash/Template'
+import lodashIsEmpty  from 'lodash/isEmpty'
+import lodashIsString from 'lodash/isString'
+import lodashTemplate from 'lodash/template'
 
 export const Validation = ({ validation: customValidation = {}, validationMessages: vMsgs = {} }) => {
   const getMsg = (msg, args = {}) => {

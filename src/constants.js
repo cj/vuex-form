@@ -14,6 +14,7 @@ export const UPDATE_DATA            = namespace('UPDATE_DATA')
 export const UPDATE_ERRORS          = namespace('UPDATE_ERRORS')
 export const UPDATE_FORM_VALID      = namespace('UPDATE_FORM_VALID')
 export const UPDATE_FORM_SUBMITTING = namespace('UPDATE_FORM_SUBMITTING')
+export const UPDATE_FORM_TOUCHED    = namespace('UPDATE_FORM_TOUCHED')
 
 // Getters
 export const FORM_DATA       = namespace('FORM_DATA')

@@ -16,8 +16,8 @@ const PORT            = process.env.WEBPACK_PORT || 3000
 
 // LOADERS
 const rules = {
-  js: { test: /\.js$/, exclude: /node_modules|dist/, loader: 'babel' },
-  vue: { test: /\.vue$/, exclude: /node_modules|dist/, loader: 'vue' }
+  js: { test: /\.js$/, exclude: /node_modules|dist/, loader: 'babel-loader' },
+  vue: { test: /\.vue$/, exclude: /node_modules|dist/, loader: 'vue-loader' }
 }
 
 //  CONFIG

@@ -1,4 +1,4 @@
-import lodashUniqueId from 'lodash/uniqueid'
+import lodashUniqueId from 'lodash/uniqueId'
 
 import { testAction } from './helpers'
 
